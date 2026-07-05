@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -12,10 +13,9 @@ import main.GamePanel;
 import main.UtilityTool;
 
 public class Entity {
-	
 	GamePanel gp;
-	
-	public BufferedImage up1, up2, up3, up4, down1, down2, down3, down4, left1, left2, left3, left4, right1, right2, right3, right4, headUp, headDown, headLeft, headRight;
+	public BufferedImage up1, up2, up3, up4, down1, down2, down3, down4, left1, left2, left3, left4, right1, right2, right3, right4, headUp, headDown, headLeft, headRight,
+							downleft1, downleft2,downright1,downright2,upleft1,upleft2,upright1,upright2, dead, bodyGetItem;
 	public BufferedImage attackUp,attackDown,attackLeft,attackRight,attackBodyUp,attackBodyDown,attackBodyLeft,attackBodyRight;
 	public BufferedImage image, image2, image3;
 	public BufferedImage death1,death2,death3, death4;
@@ -23,39 +23,62 @@ public class Entity {
 	public Rectangle attackArea = new Rectangle(0,0,0,0);
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collision = false;
-	String dialogues[] = new String[20];
-	
+	public String dialogues[] = new String[20];
 	//state
 	public int worldX, worldY;
 	public String direction = "down";
 	public int spriteNum = 1;
-	int dialogueIndex = 0;
+	public int dialogueIndex = 0;
 	public boolean collisionOn = false;
 	public boolean invincible = false;
 	boolean attacking = false;
+	public boolean destructible = false;
 	public boolean alive = true;
 	public boolean dying = false;
+	public boolean knockBack = false;
 	//counter
 	public int spriteCounter = 0;
 	public int actionLockCounter = 0;
+	public int shotAvaibleCounter;
 	int invincibleCounter = 0;
 	int dyingCounter = 0;
-	
+	public int knockBackCounter=0;
 	//character attributes
+	public int defaultSpeed;
 	public int speed;
 	public String name;
-	public int type; //0 player, 1 NPC, 2 monster
 	public int maxLife;
 	public int life;
-	public int coin;
 	
+	//item attributes
+	public int price;
+	public int coin;
+	public int type;
+	public int bomb;
+	public int attack;
+	public int value;
+	public final int type_player=0;
+	public final int type_npc=1;
+	public final int type_monster=2;
+	public final int type_consumable=3;
+	public final int type_pickupOnly = 4;
+	public final int type_obstacle = 5;
+	public final int type_reusable = 6;
+	public final int type_key = 7;
+	public final int type_inUse = 8;
+	public ArrayList<Entity> inventory = new ArrayList<>();
+	public final int maxInventorySize = 8;
+
+	public Projectile projectile;
 	public Entity(GamePanel gp) {
 		this.gp = gp;
 	}
+	
 	public void setAction() {	
 	}
 	public void damageReaction() {
 	}
+	
 	public void speak() {
 		if (dialogues[dialogueIndex]== null) {
 			dialogueIndex = 0;
@@ -63,28 +86,75 @@ public class Entity {
 		gp.ui.currentDialogue = dialogues[dialogueIndex];
 		dialogueIndex++;
 	}
-	public void update() {
-		setAction();
+	public void interact() {
+	}
+	
+	public void use(Entity entity) {}
+	public void checkDrop() {}
+	public void checkCollision() {
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkObject(this, false);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.monster);
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
-		if(this.type == 2 && contactPlayer == true) {
-			if(gp.player.invincible == false) {
-				//gp.playSE(6);
-				gp.player.life--;
-				gp.player.invincible = true;
-				gp.player.invincibleCounter=0;
+			if(this.type == type_monster && contactPlayer == true) {
+				damagePlayer(attack);
+			}
+	}
+	
+	public void dropItem(Entity droppedItem) {
+		for(int i =0; i<gp.obj[1].length;i++) {
+			if(gp.obj[gp.currentMap][i] == null) {
+				gp.obj[gp.currentMap][i] = droppedItem;
+				gp.obj[gp.currentMap][i].worldX = worldX;
+				gp.obj[gp.currentMap][i].worldY = worldY;
+				break;
 			}
 		}
-		if(collisionOn == false) {
-			switch(direction) {
-			case "up":worldY -= speed; break;
-			case "down":worldY += speed;break;
-			case "left":worldX -= speed;break;
-			case "right":worldX += speed;break;
+	}
+	
+	public void update() {
+		if(knockBack == true) {
+			checkCollision();
+			if(collisionOn == true) {
+				knockBackCounter=0;
+				knockBack=false;
+				speed = defaultSpeed;
+			}
+			else if(collisionOn == false) {
+				switch(gp.player.direction) {
+				case "up":worldY -= speed; break;
+				case "down":worldY += speed;break;
+				case "left":worldX -= speed;break;
+				case "right":worldX += speed;break;
+				case "upLeft": worldX -= speed; worldY -= speed; break;
+                case "upRight": worldX += speed; worldY -= speed; break;
+                case "downLeft": worldX -= speed; worldY += speed; break;
+                case "downRight": worldX += speed; worldY += speed; break;
+				}
+			}
+			knockBackCounter++;
+			if(knockBackCounter == 10) {
+				knockBackCounter=0;
+				knockBack=false;
+				speed = defaultSpeed;
+			}
+		}
+		else {
+			setAction();
+			checkCollision();
+			if(collisionOn == false) {
+				switch(direction) {
+				case "up":worldY -= speed; break;
+				case "down":worldY += speed;break;
+				case "left":worldX -= speed;break;
+				case "right":worldX += speed;break;
+                case "upLeft": worldX -= speed; worldY -= speed; break;
+                case "upRight": worldX += speed; worldY -= speed; break;
+                case "downLeft": worldX -= speed; worldY += speed; break;
+                case "downRight": worldX += speed; worldY += speed; break;
+				}
 			}
 		}
 		spriteCounter++;
@@ -105,7 +175,33 @@ public class Entity {
 				invincibleCounter = 0;
 			}
 		}
+		if(shotAvaibleCounter < 30) {
+			shotAvaibleCounter++;
+		}
 	}
+	
+	public void damagePlayer(int attack) {
+		if(gp.player.invincible == false) {
+			//gp.playSE(6);
+			gp.player.life--;
+			gp.player.invincible = true;
+			gp.player.invincibleCounter=0;
+			switch(gp.player.direction) {
+			case "up":gp.player.direction="down";break;
+			case "down":gp.player.direction="up";break;
+			case "left":gp.player.direction="right";break;
+			case "right":gp.player.direction="left";break;
+			case "upLeft": gp.player.direction="downRight"; break;
+            case "upRight": gp.player.direction="downLeft"; break;
+            case "downLeft": gp.player.direction="upRight"; break;
+            case "downRight": gp.player.direction="upLeft"; break;
+			}
+
+			gp.player.knockBack=true;
+			gp.player.knockBackCounter = 0;
+			}
+		}
+	
 	public void draw(Graphics2D g2) {
 		BufferedImage body = null, head = null;
 		int screenX = worldX - gp.cameraX;
@@ -113,7 +209,6 @@ public class Entity {
 		int join = 14;
 		int headX = screenX;    
 		int headY = (screenY - gp.tileSize + join);
-		
 		if (screenX + gp.tileSize > 0 && screenX < gp.screenWidth &&
 		    screenY + gp.tileSize > 0 && screenY < gp.screenHeight) {
 			
@@ -127,15 +222,18 @@ public class Entity {
 	            head = headDown;
 	            break;
 	        case "left":
+	        case "upLeft":
+	        case "downLeft":
 	            body = (spriteNum==1 ? left1 : spriteNum==2 ? left2 : spriteNum==3 ? left3 : left4);
 	            head = headLeft;
 	            break;
 	        case "right":
+	        case "upRight":
+	        case "downRight":
 	            body = (spriteNum==1 ? right1 : spriteNum==2 ? right2 : spriteNum==3 ? right3 : right4);
 	            head = headRight;
 	            break;
-			}
-			
+	    }
 			if(invincible == true && dying == false) {
 				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4F));
 			}
@@ -148,8 +246,7 @@ public class Entity {
 				
 				head = null; 
 			}
-
-		    g2.drawImage(body, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		    g2.drawImage(body, screenX, screenY, null);
 		    if (head != null) {
 		    	g2.drawImage(head, headX, headY, null);
 		    }
@@ -159,7 +256,7 @@ public class Entity {
 	
 	public void dyingAnimation() {
 		dyingCounter++;
-		int i = 10; 
+		int i = 5; 
 		if(dyingCounter <= i) {
 			spriteNum = 1;
 		}
@@ -172,12 +269,10 @@ public class Entity {
 		else if(dyingCounter > i * 3 && dyingCounter <= i * 4) {
 			spriteNum = 4;
 		}
-		if (dyingCounter > 40) {
-			dying = false;
+		if (dyingCounter > 20) {
 			alive = false;
 		}
 	}
-	
 	public BufferedImage setup(String imagePath, int width, int height) {
 		UtilityTool uTool = new UtilityTool();
 				BufferedImage image = null;
@@ -189,5 +284,4 @@ public class Entity {
 		}
 		return image;
 	}
-
 }
