@@ -33,6 +33,7 @@ public class Player extends Entity{
 	int deathSpinCount = 0;
 	int deadTimer = 0;
 	
+	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		this.keyH = keyH;
@@ -47,6 +48,7 @@ public class Player extends Entity{
 		solidArea.height=32;
 		attackArea.width = 36;
 		attackArea.height =44;
+		attack=2;
 
 		setDefaultValues();
 		getPlayerImage();
@@ -56,17 +58,13 @@ public class Player extends Entity{
 
 	public void setDefaultValues() {
 		//player position in the map
-		worldX = gp.tileSize * 13;
-		worldY = gp.tileSize * 8;
-//		worldX = gp.tileSize * 18;
-//		worldY = gp.tileSize * 44;
+		setDefaultPosition();
 		defaultSpeed=4;
 		speed = defaultSpeed;
 		direction = "up";
-		//player status
 		maxLife = 10;
 		life = maxLife;	
-		coin = 500;
+		coin = 0;
 		bomb=0;
 		isDead = false;
 		isDying = false;
@@ -74,16 +72,16 @@ public class Player extends Entity{
 		deathSpinCounter = 0;
 		invincible = false;
 		deadTimer = 0;
-		inventory.add(new OBJ_Key(gp));
+		inventory.clear();
 		inventory.add(new OBJ_Sword(gp));
 		inventory.add(new OBJ_Armor(gp));
+		
 	}
 	
 	public void setDefaultPosition() {
 		gp.currentMap=5;
 		worldX = gp.tileSize * 13;
 		worldY = gp.tileSize * 8;
-
 		direction = "up";
 	}
 	
@@ -140,12 +138,25 @@ public class Player extends Entity{
 	        return;
 	    }
 		if(isDead == true) {
+			boolean hasBook = false;
+			for(int j = 0; j < inventory.size(); j++) {
+				if(inventory.get(j) != null && inventory.get(j).name != null && inventory.get(j).name.equals("Libro del Risveglio")) {
+					hasBook = true;
+					break; 
+				}
+			}
 			deadTimer++;
-			if(deadTimer > 60) { 
+			if(deadTimer > 60 && hasBook == true) { 
 				gp.gameState = gp.gameOverState; 
 				knockBack=false;
 				speed=defaultSpeed;
 				gp.retry();
+			}
+			if(deadTimer > 60 && hasBook == false) { 
+				gp.gameState = gp.gameOverState; 
+				knockBack=false;
+				speed=defaultSpeed;
+				gp.restart();
 			}
 			
 			return;
@@ -210,7 +221,6 @@ public class Player extends Entity{
 			int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
 			//DEBUG
 			if(iTileIndex != 999) {
-				System.out.println("Collisione rilevata con iTile indice: " + iTileIndex);
 			}
 			checkDoorCollision(iTileIndex);
 			//check event
@@ -274,86 +284,75 @@ public class Player extends Entity{
 	        isDying = true; 
 	    }
 		updateBombCount();
-	}
+		}
+	
 
 	public void checkDoorCollision(int i) {
-		if(i != 999) {
-			if(gp.iTile[gp.currentMap][i].name != null && gp.iTile[gp.currentMap][i].name.equals("Door")) {	
-				boolean hasKey = false;
-				int keyIndex = -1;
+	    if (i == 999) return; 
 
-				for(int j = 0; j < inventory.size(); j++) {
-					if(inventory.get(j) != null && inventory.get(j).name != null && inventory.get(j).name.equals("Key")) {
-						hasKey = true;
-						keyIndex = j;
-						break; 
-					}
-				}
+	    if (gp.iTile[gp.currentMap][i] == null || gp.iTile[gp.currentMap][i].name == null) {
+	        return;
+	    }
 
-				if(hasKey == true) {
-					inventory.remove(keyIndex);
-					if(currentItem != null && currentItem.name != null && currentItem.name.equals("Key")) {
-	                    currentItem = null;
+	    String tileName = gp.iTile[gp.currentMap][i].name;
+
+	    if (tileName.equals("Door") || tileName.equals("BossDoor")) {
+	        
+	        boolean hasKey = false;
+	        int keyIndex = -1;
+
+	        for (int j = 0; j < inventory.size(); j++) {
+	            if (inventory.get(j) != null && inventory.get(j).name != null && inventory.get(j).name.equals("Chiave")) {
+	                hasKey = true;
+	                keyIndex = j;
+	                break; 
+	            }
+	        }
+
+	        if (hasKey) {
+	            inventory.remove(keyIndex);
+	            if (currentItem != null && currentItem.name != null && currentItem.name.equals("Chiave")) {
+	                currentItem = null;
+	            }
+
+	            if (tileName.equals("Door")) {
+	                gp.iTile[gp.currentMap][i] = null; 
+	                gp.ui.currentDialogue = "Hai aperto la porta del dungeon!";
+	            } 
+	            else if (tileName.equals("BossDoor")) {
+	                int doorX = gp.iTile[gp.currentMap][i].worldX;
+	                int doorY = gp.iTile[gp.currentMap][i].worldY;
+	                
+	                gp.iTile[gp.currentMap][i] = null; 
+	                
+	                for (int j = 0; j < gp.iTile[gp.currentMap].length; j++) {
+	                    if (gp.iTile[gp.currentMap][j] != null && gp.iTile[gp.currentMap][j].name != null && gp.iTile[gp.currentMap][j].name.equals("BossDoor")) {
+	                        
+	                        int distanceX = Math.abs(gp.iTile[gp.currentMap][j].worldX - doorX);
+	                        int distanceY = Math.abs(gp.iTile[gp.currentMap][j].worldY - doorY);
+	                        
+	                        if (distanceX <= gp.tileSize && distanceY <= gp.tileSize) {
+	                            gp.iTile[gp.currentMap][j] = null; 
+	                        }
+	                    }
 	                }
-					gp.gameState=gp.dialogueState;
-					gp.ui.currentDialogue="Hai aperto la porta del dungeon!";
-					gp.ui.drawDialogueScreen();
-					gp.iTile[gp.currentMap][i] = null; 
+	                gp.ui.currentDialogue = "Hai aperto la porta!";
+	            }
 
-				} 
-				else {
-					gp.gameState=gp.dialogueState;
-					gp.ui.currentDialogue="Devi trovare prima la chiave!";
-					gp.ui.drawDialogueScreen();
-				}
-			}
-		}
+	            gp.gameState = gp.dialogueState;
+	        } 
+	        else {
+	            gp.gameState = gp.dialogueState;
+	            if (tileName.equals("Door")) {
+	                gp.ui.currentDialogue = "Devi trovare prima la chiave!";
+	            } else {
+	                gp.ui.currentDialogue = "Ti serve una chiave per aprire\nquesta porta!";
+	            }
+	        }
+	    }
 	}
 	
-	public void attacking() {
-		spriteCounter++;
-		
-		if(spriteCounter <= 5) {
-			spriteNum = 1;
-		}
-		
-		if(spriteCounter > 5 && spriteCounter <= 25) {
-			spriteNum = 2;
-			
-			int currentWorldX = worldX;
-			int currentWorldY = worldY;
-			int solidAreaWidth = solidArea.width;
-			int solidAreaHeight = solidArea.height;
-			
-			switch(direction) {
-			case "up": 
-				worldY -= gp.tileSize;
-				solidArea.y = 0;      
-				break;
-			case "down": worldY += attackArea.height; break;
-			case "left": worldX -= attackArea.width; break;
-			case "right": worldX += attackArea.width; break;
-			}
-			solidArea.width = attackArea.width;
-			solidArea.height = attackArea.height;
-
-			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-			damageMonster(monsterIndex,1); 
-			
-			
-			worldX = currentWorldX;
-			worldY = currentWorldY;
-			solidArea.width = solidAreaWidth;
-			solidArea.height = solidAreaHeight;
-			solidArea.y = solidAreaDefaultY;
-		}
-		
-		if(spriteCounter > 25) {
-			spriteNum = 1;
-			spriteCounter = 0;
-			attacking = false;
-		}
-	}
+	
 	
 	public void dyingAnimation() {
 	    deathSpinCounter++;
@@ -395,8 +394,7 @@ public class Player extends Entity{
 			//inventory item
 			else {
 			String text=""; 
-			if(inventory.size() != maxInventorySize) {
-				inventory.add(gp.obj[gp.currentMap][i]);
+			if(canObtainItem(gp.obj[gp.currentMap][i])==true) {
 				//gp.playSE(1);
 			}
 			else {
@@ -410,7 +408,6 @@ public class Player extends Entity{
 	public void interactNPC(int i) {
 		if(gp.keyH.zetapressed == true){
 			if(i != 999) {
-				gp.gameState = gp.dialogueState;
 				gp.npc[gp.currentMap][i].speak();
 			}
 			else{
@@ -424,7 +421,8 @@ public class Player extends Entity{
 		if(i !=999) {
 			if(invincible == false && gp.monster[gp.currentMap][i].dying == false) {
 				//gp.playSE(6);
-				life--;
+				int damage = gp.monster[gp.currentMap][i].attack;
+				life -= damage;
 				invincible = true;
 				switch(direction) {
                 case "up": direction = "down"; break;
@@ -432,7 +430,7 @@ public class Player extends Entity{
                 case "left": direction = "right"; break;
                 case "right": direction = "left"; break;
             }
-
+			knockBackDirection = direction;
             knockBack = true;
             knockBackCounter = 0;
             speed += 4;
@@ -441,11 +439,11 @@ public class Player extends Entity{
 		}
 	
 
-	public void damageMonster(int i, int attack) {
+	public void damageMonster(int i, Entity attacker, int attack) {
 		if(i != 999) {
 			if(gp.monster[gp.currentMap][i].invincible == false) {
 				//gp.playSE(5);
-				knockBack(gp.monster[gp.currentMap][i]);
+				knockBack(gp.monster[gp.currentMap][i],attacker);
 				gp.monster[gp.currentMap][i].life -= attack; 
 				gp.monster[gp.currentMap][i].invincible = true;
 				gp.monster[gp.currentMap][i].damageReaction();
@@ -456,37 +454,81 @@ public class Player extends Entity{
 		}
 	}
 	
-	public void knockBack(Entity entity) {
-		entity.direction=direction;
-		entity.speed+=10;
-		entity.knockBack=true;
-		
-	}
 
-	public void selectItem() {
-		int itemIndex = gp.ui.getItemIndexOnSlot();
-		if(itemIndex<inventory.size()) {
-			Entity selectedItem = inventory.get(itemIndex);
-			if(selectedItem.type == type_consumable) {
-				selectedItem.use(this);
-				inventory.remove(itemIndex);
-				currentItem = null;
-			}
-			else if(selectedItem.type == type_reusable) {
-				selectedItem.use(this);
+public void selectItem() {
+        
+        Entity selectedItem = gp.ui.getHoveredItem();
+        
+        if (selectedItem != null) {
+           
+            if (selectedItem.type == type_inUse) {
+                return; 
+            }
+            currentItem = selectedItem;
+
+            if (selectedItem.type == type_consumable) {
+                selectedItem.use(this);
+                if(selectedItem.amount>1) {
+                	selectedItem.amount--;
+                }
+                else {
+                inventory.remove(selectedItem); 
+                }
+                currentItem = null;
+            }
+            else if (selectedItem.type == type_reusable) {
+                selectedItem.use(this);
+            }
+        }
+    }
+
+public void updateBombCount() {
+	int bombIndex = searchItemInInventory("Bomb");
+	
+	if (bombIndex != 999) {
+		bomb = inventory.get(bombIndex).amount;
+	} else {
+		bomb = 0;
+	}
+}
+	
+	public int searchItemInInventory(String itemName) {
+		int itemIndex = 999;
+		for (int i =0; i<inventory.size();i++) {
+			if(inventory.get(i).name.equals(itemName)) {
+				itemIndex=i;
+				break;
 			}
 		}
-	}
-	public void updateBombCount() {
-	    int currentBombs = 0;
-	    for (Entity item : inventory) {
-	        if (item != null && item.name != null && item.name.equals("Bomb")) {
-	            currentBombs++;
-	        }
-	    }
-	    bomb = currentBombs;
+		return itemIndex;
 	}
 	
+	public boolean canObtainItem(Entity item) {
+		boolean canObtain=false;
+		Entity newItem=gp.eGenerator.getObject(item.name);
+		//check if stackable
+		if(newItem.stackable==true) {
+			int index=(searchItemInInventory(newItem.name));
+			if(index!= 999) {
+				inventory.get(index).amount++;
+				canObtain=true;
+			}
+			else {
+				if(inventory.size()!=maxInventorySize) {
+					inventory.add(newItem);
+					canObtain=true;
+				}
+			}
+		}
+		else {
+			if(inventory.size()!=maxInventorySize) {
+				inventory.add(newItem);
+				canObtain=true;
+			}
+		}
+		return canObtain;
+	}
+	 @Override
 	public void draw(Graphics2D g2) {
 
 		int screenX = worldX - gp.cameraX;

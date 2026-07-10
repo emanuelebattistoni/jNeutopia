@@ -5,13 +5,14 @@ import main.GamePanel;
 
 public class OBJ_Fire_Wand extends Entity {
     GamePanel gp;
+	public static final String objName = "Staffa del Fuoco";
 
     public OBJ_Fire_Wand(GamePanel gp) {
         super(gp);
         this.gp = gp;
-        name = "Fire Wand";
+        name = objName;
         type = type_reusable; 
-        price = 20;
+        price = 50;
         down1 = setup("/objects/fire_wand", gp.tileSize, gp.tileSize); 
     }
 

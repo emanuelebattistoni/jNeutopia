@@ -5,7 +5,8 @@ import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Cherry;
 import object.OBJ_Coin;
-import object.OBJ_Fireball; 
+import object.OBJ_Fireball;
+import object.OBJ_Key; 
 
 public class MON_Drake extends Entity {
     
@@ -20,9 +21,10 @@ public class MON_Drake extends Entity {
         name = "Drake";
         defaultSpeed = 1;
         speed = defaultSpeed;
-        maxLife = 10;
+        //maxLife = 66;
+        maxLife = 1;
         life = maxLife;
-        
+        attack=4;
         solidArea.width = 140;
         solidArea.height = 136; 
         solidArea.x = 2; 
@@ -45,13 +47,7 @@ public class MON_Drake extends Entity {
         right1 = setup("/monster/dragonBossR1", gp.tileSize*3, gp.tileSize*3+10);
         right2 = setup("/monster/dragonBossL2", gp.tileSize*3, gp.tileSize*3+10);
     }
-    
-    public void loadDeathImage() {
-        death1 = setup("/monster/dMonster1", gp.tileSize, gp.tileSize);
-        death2 = setup("/monster/dMonster2", gp.tileSize, gp.tileSize);
-        death3 = setup("/monster/dMonster3", gp.tileSize, gp.tileSize);
-        death4 = setup("/monster/dMonster4", gp.tileSize, gp.tileSize);
-    }
+
     
     public void setAction() {
         
@@ -134,12 +130,6 @@ public class MON_Drake extends Entity {
     }
     
     public void checkDrop() {
-        int i = new Random().nextInt(100) + 1;
-        if(i < 25) {
-            dropItem(new OBJ_Coin(gp));
-        }
-        if(i >= 75) {
-            dropItem(new OBJ_Cherry(gp));
-        }
+    	 dropItem(new OBJ_Key(gp));
     }
 }

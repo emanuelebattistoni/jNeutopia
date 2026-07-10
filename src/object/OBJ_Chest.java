@@ -2,55 +2,64 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Chest extends Entity{
+public class OBJ_Chest extends Entity {
 	GamePanel gp;
-	Entity loot;
-	boolean opened = false;
-	public OBJ_Chest(GamePanel gp, Entity loot) {
+	public static final String objName = "Chest";
+
+	public OBJ_Chest(GamePanel gp) {
 		super(gp);
-		this.gp= gp;
-		this.loot=loot;
-		name = "Chest";
-		image=setup("/objects/chestClosed", gp.tileSize, gp.tileSize);
-		image2= setup("/objects/chestOpened", gp.tileSize, gp.tileSize);
-		down1=image;
-		type=type_obstacle;
-		collision=true;
-		solidArea.x=4;
-		solidArea.y=16;
-		solidArea.height=32;
-		solidArea.width=48;
+		this.gp = gp;
+		name = objName;
+		image = setup("/objects/chestClosed", gp.tileSize, gp.tileSize);
+		image2 = setup("/objects/chestOpened", gp.tileSize, gp.tileSize);
+		down1 = image;
+		type = type_obstacle;
+		collision = true;
+		solidArea.x = 4;
+		solidArea.y = 16;
+		solidArea.height = 32;
+		solidArea.width = 48;
 		solidAreaDefaultX = solidArea.x;
-		solidAreaDefaultY= solidArea.y;
+		solidAreaDefaultY = solidArea.y;
 	}
+	
+	public void setLoot(Entity loot) {
+		this.loot = loot;
+		setDialogue();
+	}
+	
+	public void setDialogue() {
+		dialogues[0][0] = "Non puoi portare più oggetti!";
+		dialogues[1][0] = "Il nostro eroe Jazeta ha ottenuto:\n" + loot.name + "!";
+		dialogues[2][0] = "La cassa è vuota.";
+	}
+	
 	public void interact() {
-		gp.gameState=gp.dialogueState;
-		if(opened==false) {
-			StringBuilder sb = new StringBuilder();
-			if(gp.player.inventory.size() == gp.player.maxInventorySize) {
-				sb.append("You cannot carry anymore!");
-			}
-			else {
-				sb.append("Our hero Jazeta has obtained " + loot.name + "!");
-				if(loot.type != type_pickupOnly) {
-					gp.player.inventory.add(loot);
-				}
-				if (loot.name.equals("Bomb")) {
-		            gp.player.bomb+=4;
-		        }
-				else {
-					loot.use(gp.player);
-				}
-				down1=image2;
-				gp.player.direction="down";
-				opened=true;
+		if (opened == false) {
+			if (loot.type == type_pickupOnly) {
+				startDialogue(this, 1);			
+				down1 = image2;
+				gp.player.direction = "down";
+				opened = true;
 				gp.player.drawingGetItem = true;
 				gp.player.itemObtained = loot;
+				loot.use(gp.player);
 			}
-			gp.ui.currentDialogue = sb.toString();
+			else {
+				if (gp.player.canObtainItem(loot) == false) {
+					startDialogue(this, 0);}
+				else {
+					startDialogue(this, 1);			
+					down1 = image2;
+					gp.player.direction = "down";
+					opened = true;
+					gp.player.drawingGetItem = true;
+					gp.player.itemObtained = loot;
+				}
+			}
 		}
 		else {
-			gp.ui.currentDialogue = "It's empty";
+			startDialogue(this, 2);	
+		}
 		}
 	}
-}

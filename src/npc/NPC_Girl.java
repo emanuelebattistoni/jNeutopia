@@ -16,16 +16,21 @@ public class NPC_Girl extends Entity{
 	}
 	public void getImage() {
 		up1=setup("/npc/brownBottom", gp.tileSize, gp.tileSize);
-		up2=setup("/npc/brownBottom", gp.tileSize, gp.tileSize);
+		up2=up1;
 		headUp= setup("/npc/girlHead", gp.tileSize, gp.tileSize);
 	}
 	
 	public void setDialogue() {
-		dialogues[0]="Quel farabutto di Dirth e le sue dozzine di\ndemoni malvagi propsperano nella sfera\nsotteranea.";
-		dialogues[1]="Raccogli la chiave contenuta nella cassa per\npoter accedere al labirinto sotteraneo.";
-		dialogues[2]="Ora vai verso ovest e trova l'accesso del\nlabirinto.";
+		dialogues[0][0]="Quel farabutto di Dirth e le sue dozzine di\ndemoni malvagi proszperano nella sfera\nsotteranea.";
+		dialogues[0][1]="Raccogli la chiave contenuta nella cassa per\npoter accedere al labirinto sotteraneo.";
+		dialogues[0][2]="Ora vai verso ovest e trova l'accesso del\nlabirinto.";
+		dialogues[1][0]="Mi dispiace ma non posso più aiutarti.\nOra vai verso ovest e trova l'accesso del\nlabirinto";
 	}
 	public void speak() {
-		super.speak();
+		if (hasSpoken==true && gp.obj[2][5].opened) {
+			dialogueSet = 1;
+		}
+		startDialogue(this,dialogueSet);
+		hasSpoken = true;
 	}
 }

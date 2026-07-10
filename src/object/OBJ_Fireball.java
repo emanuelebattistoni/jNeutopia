@@ -1,20 +1,22 @@
 package object;
 
+import entity.Entity; 
 import entity.Projectile;
 import main.GamePanel;
 
 public class OBJ_Fireball extends Projectile {
 	
 	GamePanel gp;
-	 
+	public static final String objName = "Fireball";
+
 	public OBJ_Fireball(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
-		name = "Fireball";
+		name = objName;
 		speed = 5;
 		maxLife = 50;
 		life = maxLife;
-		attack = 1;
+		attack = 1; 
 		alive = false;
 		solidArea.x = 12;
 		solidArea.y = 12;
@@ -38,13 +40,24 @@ public class OBJ_Fireball extends Projectile {
 	}
 
 	@Override
+	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {
+
+		super.set(worldX, worldY, direction, alive, user);
+		
+		if (user == gp.player) {
+			this.attack = 1; 
+		} else {
+			this.attack = 4;
+		}
+	}
+
+	@Override
 	public void update() {
 
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
 		
 		if(collisionOn == true) {
-
 			alive = false;
 		} 
 		else {

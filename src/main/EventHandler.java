@@ -71,8 +71,10 @@ public class EventHandler {
 			if(hit(0,8,5,"any")==true) {teleport(8,12, 11);}
 			if(hit(8,12,12,"any")==true || (hit(8,13,12,"any")==true)) {teleport(0,8,6);}
 			if(hit(0,25,6,"any")==true) {teleport(6,7,78);}
-			if(hit(6,7,79,"any")==true || (hit(6,7,79,"any")==true)) {teleport(0,25,7);}
-			if(hit(6,57,18,"any")==true) {teleport(6,57,14);}
+			if(hit(6,7,79,"any")==true || (hit(6,7,79,"any")==true)){
+				{teleport(0,25,7);}
+				gp.aSetter.setMonster();
+			}
 		}
 	}
 	
@@ -119,4 +121,5 @@ public class EventHandler {
 	    previousEventY = gp.player.worldY;
 	    canTouchEvent = false;
 	}
+	
 }

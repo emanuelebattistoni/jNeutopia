@@ -3,6 +3,8 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import entity.Entity;
+
 public class KeyHandler implements KeyListener{
 	GamePanel gp;
 	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, zetapressed, shotKeyPressed;
@@ -34,7 +36,7 @@ public class KeyHandler implements KeyListener{
 			inventoryState(code); 
 		}
 		//DIALOGUE STATE
-		else if (gp.gameState == gp.dialogueState) {
+		else if (gp.gameState == gp.dialogueState || gp.gameState == gp.cutsceneState) {
 			dialogueState(code);
 		}
 		else if(gp.gameState== gp.optionsState) {
@@ -86,7 +88,9 @@ public class KeyHandler implements KeyListener{
 				//gp.playMusic(0);
 			}
 			if(gp.ui.commandNum==1) {
-				//add later;
+				gp.saveLoad.load();
+				gp.gameState=gp.playState;
+				//gp.playMusic(0);
 			}
 		}
 	}
@@ -151,18 +155,16 @@ public class KeyHandler implements KeyListener{
 				}
 			}	
 			if(code == KeyEvent.VK_ENTER) {
-				int itemIndex=gp.ui.getItemIndexOnSlot();
-				if (itemIndex < gp.player.inventory.size()) {
-	                gp.player.currentItem = gp.player.inventory.get(itemIndex);
-	             // gp.playSE(X);
+				Entity selectedItem = gp.ui.getHoveredItem();
+				if (selectedItem != null) {
+					gp.player.currentItem = selectedItem;
+					// gp.playSE(X);
 				}
-			}
-	}
+			}	}
 	
 	public void dialogueState(int code) {
 		if(code == KeyEvent.VK_Z) {
-			gp.gameState = gp.playState;
-			zetapressed = false;
+			zetapressed = true;
 			gp.player.drawingGetItem = false;
 			gp.player.itemObtained = null;
 		}

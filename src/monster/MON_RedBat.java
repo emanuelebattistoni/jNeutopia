@@ -2,8 +2,12 @@ package monster;
 
 import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Bomb;
 import object.OBJ_Cherry;
 import object.OBJ_Coin;
+import object.OBJ_GoldCoin;
+import object.OBJ_Wing;
+
 import java.util.Random;
 
 public class MON_RedBat extends Entity {
@@ -31,7 +35,8 @@ public class MON_RedBat extends Entity {
         name = "fly"; 
         defaultSpeed = 2; 
         speed = defaultSpeed;
-        maxLife = 2;
+        maxLife = 3;
+        attack=1;
         life = maxLife;
         solidArea.x = 3;
         solidArea.y = 18;
@@ -50,38 +55,34 @@ public class MON_RedBat extends Entity {
     public void getImage() {
     	up1 = setup("/monster/redBat", gp.tileSize, gp.tileSize);
         up2 = setup("/monster/redBat2", gp.tileSize, gp.tileSize);
-        down1 = setup("/monster/redBat", gp.tileSize, gp.tileSize);
-        down2 = setup("/monster/redBat2", gp.tileSize, gp.tileSize);
-        left1 = setup("/monster/redBat", gp.tileSize, gp.tileSize);
-        left2 = setup("/monster/redBat2", gp.tileSize, gp.tileSize);
-        right1 = setup("/monster/redBat", gp.tileSize, gp.tileSize);
-        right2 = setup("/monster/redBat2", gp.tileSize, gp.tileSize);
+        down1 = up1;
+        down2 = up2;
+        left1 = up1;
+        left2 = up2;
+        right1 = up1;
+        right2 = up2;
     }
-    
-    public void loadDeathImage() {
-        death1 = setup("/monster/dMonster1", gp.tileSize, gp.tileSize);
-        death2 = setup("/monster/dMonster2", gp.tileSize, gp.tileSize);
-        death3 = setup("/monster/dMonster3", gp.tileSize, gp.tileSize);
-        death4 = setup("/monster/dMonster4", gp.tileSize, gp.tileSize);
-    }
+
     
     public void setAction() {
-        actionLockCounter++;
-        
-        if(actionLockCounter == 15) {
-            
-            direction = semiCircles[currentPattern][step];
-            
-            step++;
-            
-            if(step == semiCircles[currentPattern].length) {
-                step = 0;
-
-                Random random = new Random();
-                currentPattern = random.nextInt(semiCircles.length);
+        SaveStartPosition();
+        if (startSaved == true) {
+            checkWanderDistance(maxDistance);   
+            if (returningHome == true) {
+                moveTowards(startWorldX, startWorldY);
+            } else {
+            	actionLockCounter++;
+            	if(actionLockCounter == 15) {
+            		direction = semiCircles[currentPattern][step];
+            		step++;
+            		if(step == semiCircles[currentPattern].length) {
+            			step = 0;
+            			Random random = new Random();
+            			currentPattern = random.nextInt(semiCircles.length);
+            		}
+            		actionLockCounter = 0;
+            	}
             }
-            
-            actionLockCounter = 0;
         }
     }
     
@@ -93,11 +94,20 @@ public class MON_RedBat extends Entity {
     
     public void checkDrop() {
         int i = new Random().nextInt(100) + 1;
-        if(i < 25) {
-            dropItem(new OBJ_Coin(gp));
+        if(i < 5) {
+            dropItem(new OBJ_GoldCoin(gp));
         }
-        if(i >= 75) {
+        if(i>=25 && i <45) {
+        	dropItem(new OBJ_Coin(gp));
+        }
+        if(i >=45 && i<50) {
             dropItem(new OBJ_Cherry(gp));
+        }
+        if(i >=55 && i<60) {
+            dropItem(new OBJ_Bomb(gp));
+        }
+        if(i >=65 && i<75) {
+            dropItem(new OBJ_Wing(gp));
         }
     }
 }

@@ -16,16 +16,17 @@ public class NPC_Cowboy extends Entity{
 	}
 	public void getImage() {
 		up1=setup("/npc/cowboyBottom", gp.tileSize, gp.tileSize);
-		up2=setup("/npc/cowboyBottom", gp.tileSize, gp.tileSize);
+		up2=up1;
 		headUp= setup("/npc/cowboyHead", gp.tileSize, gp.tileSize);
 	}
 	
 	public void setDialogue() {
-		dialogues[0]="Se vuoi recuperare le tue forze, puoi\ntornare al santuario della gentile signora\nanziana.";
-		dialogues[1]="Potrai anche salvare la partita e tornare\npiù tardi per finirla.";
-		dialogues[2]="Quindi se hai bisogno di fermarti, chiedi\naiuto all'anziana signora dalla grande\nmemoria.";
+		dialogues[0][0]="Se vuoi recuperare le tue forze, puoi\ntornare al santuario della gentile signora\nanziana.";
+		dialogues[0][1]="Potrai anche salvare la partita e tornare\npiù tardi per finirla.";
+		dialogues[0][2]="Usa le Ali del Ritorno per tornare più\nvelocemente dall'anziana signora.";
+		dialogues[0][3]="Quindi se hai bisogno di fermarti, chiedi\naiuto all'anziana signora dalla grande\nmemoria.";
 	}
 	public void speak() {
-		super.speak();
+		startDialogue(this,dialogueSet);
 	}
 }

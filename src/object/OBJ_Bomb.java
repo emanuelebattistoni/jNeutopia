@@ -8,18 +8,19 @@ import tile_interactive.InteractiveTile;
 
 public class OBJ_Bomb extends Projectile {
 	GamePanel gp;
-	
+	public static final String objName = "Bomb";
 	public OBJ_Bomb(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		type = type_consumable;
-		name = "Bomb";
+		name = objName;
 		speed = 0; 
 		maxLife = 60; 
 		life = maxLife;
 		attack = 2; 
 		alive = false;
 		price=10;
+		stackable=true;
 		getImage();
 	}
 	

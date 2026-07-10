@@ -5,12 +5,13 @@ import main.GamePanel;
 
 public class OBJ_Coin extends Entity {
 	GamePanel gp;
-	
+	public static final String objName = "Moneta";
+
 	public OBJ_Coin(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		type=type_pickupOnly;
-		name="Coin";
+		name=objName;
 		value=10;
 		down1=setup("/objects/coin", gp.tileSize, gp.tileSize);
 		

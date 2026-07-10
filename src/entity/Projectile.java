@@ -21,7 +21,7 @@ public class Projectile extends Entity{
 		if(user == gp.player) {
 			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
 			if(monsterIndex!=999) {
-				gp.player.damageMonster(monsterIndex, attack);
+				gp.player.damageMonster(monsterIndex,this, attack);
 				alive = false;
 			}
 		}
@@ -32,11 +32,22 @@ public class Projectile extends Entity{
 				alive = false;
 			}
 		}
+		int diagSpeed = (int) Math.round(speed * 0.707);
+		
+		if (diagSpeed == 0 && speed > 0) {
+			diagSpeed = 1; 
+		}
+
 		switch(direction) {
 		case "up": worldY -= speed; break;
 		case "down": worldY += speed; break;
 		case "left": worldX -= speed; break;
 		case "right":worldX += speed; break;
+		
+		case "upLeft": worldX -= diagSpeed; worldY -= diagSpeed; break;
+		case "upRight": worldX += diagSpeed; worldY -= diagSpeed; break;
+		case "downLeft": worldX -= diagSpeed; worldY += diagSpeed; break;
+		case "downRight": worldX += diagSpeed; worldY += diagSpeed; break;
 		}
 		life--;
 		if(life<=0) {

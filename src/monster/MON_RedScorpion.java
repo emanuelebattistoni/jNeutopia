@@ -3,15 +3,14 @@ package monster;
 import java.util.Random;
 import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Bomb;
 import object.OBJ_Cherry;
 import object.OBJ_Coin;
+import object.OBJ_GoldCoin;
+import object.OBJ_Wing;
 
 public class MON_RedScorpion extends Entity {
 	
-	int startWorldX, startWorldY;
-	boolean startSaved = false;
-	int maxDistance = 5;
-	boolean returningHome = false;
 	GamePanel gp;
 	
 	public MON_RedScorpion(GamePanel gp) {
@@ -21,7 +20,7 @@ public class MON_RedScorpion extends Entity {
 		name = "redScorpion";
 		defaultSpeed = 1;
 		speed = defaultSpeed;
-		maxLife = 2;
+		maxLife = 3;
 		life = maxLife;
 		solidArea.x = 3;
 		solidArea.y = 18;
@@ -38,39 +37,19 @@ public class MON_RedScorpion extends Entity {
 		up2 = setup("/monster/redScorpionL2", gp.tileSize, gp.tileSize);
 		down1 = setup("/monster/redScorpionR1", gp.tileSize, gp.tileSize);
 		down2 = setup("/monster/redScorpionR2", gp.tileSize, gp.tileSize);
-		left1 = setup("/monster/redScorpionL1", gp.tileSize, gp.tileSize);
-		left2 = setup("/monster/redScorpionL2", gp.tileSize, gp.tileSize);
-		right1 = setup("/monster/redScorpionR1", gp.tileSize, gp.tileSize);
-		right2 = setup("/monster/redScorpionR2", gp.tileSize, gp.tileSize);
+		left1 = up1;
+		left2 = up2;
+		right1 = down1;
+		right2 = down2;
 	}
 	
-	public void loadDeathImage() {
-		death1 = setup("/monster/dMonster1", gp.tileSize, gp.tileSize);
-		death2 = setup("/monster/dMonster2", gp.tileSize, gp.tileSize);
-		death3 = setup("/monster/dMonster3", gp.tileSize, gp.tileSize);
-		death4 = setup("/monster/dMonster4", gp.tileSize, gp.tileSize);
-	}
+
 	
 	public void setAction() {
-		if(startSaved == false) {
-			if(worldX != 0 && worldY != 0) {
-				startWorldX = worldX;
-				startWorldY = worldY;
-				startSaved = true;
-			}
-		}
+		SaveStartPosition();
 		
 		if(startSaved == true) {
-			int xDistance = Math.abs(worldX - startWorldX) / gp.tileSize;
-			int yDistance = Math.abs(worldY - startWorldY) / gp.tileSize;
-			
-			if(xDistance > maxDistance || yDistance > maxDistance) {
-				returningHome = true;
-			}
-			
-			if(returningHome == true && xDistance < 2 && yDistance < 2) {
-				returningHome = false;
-			}
+			checkWanderDistance(maxDistance);
 			
 			if(returningHome == true) {
 				if (worldX > startWorldX && worldY > startWorldY) direction = "upLeft";
@@ -82,41 +61,32 @@ public class MON_RedScorpion extends Entity {
 				else if (worldY > startWorldY) direction = "up";
 				else if (worldY < startWorldY) direction = "down";
 			} else {
-				actionLockCounter++;
-				
-				if(actionLockCounter == 120) {
-					Random random = new Random();
-					int i = random.nextInt(100) + 1;
-					
-					if(i <= 25) {
-						direction = "upLeft";
-					}
-					else if(i > 25 && i <= 50) {
-						direction = "upRight";
-					}
-					else if(i > 50 && i <= 75) {
-						direction = "downLeft";
-					}
-					else if(i > 75 && i <= 100) {
-						direction = "downRight";
-					}
-					actionLockCounter = 0;
+				getRandomDirection();
 				}
 			}
 		}
-	}
+	
 
 	public void damageReaction() {
 		actionLockCounter = 0;
 	}
 	
 	public void checkDrop() {
-		int i = new Random().nextInt(100) + 1;
-		if(i < 25) {
-			dropItem(new OBJ_Coin(gp));
-		}
-		if(i >= 75) {
-			dropItem(new OBJ_Cherry(gp));
-		}
-	}
+        int i = new Random().nextInt(100) + 1;
+        if(i < 5) {
+            dropItem(new OBJ_GoldCoin(gp));
+        }
+        if(i>=25 && i <45) {
+        	dropItem(new OBJ_Coin(gp));
+        }
+        if(i >=45 && i<50) {
+            dropItem(new OBJ_Cherry(gp));
+        }
+        if(i >=55 && i<60) {
+            dropItem(new OBJ_Bomb(gp));
+        }
+        if(i >=65 && i<75) {
+            dropItem(new OBJ_Wing(gp));
+        }
+    }
 }

@@ -5,12 +5,13 @@ import main.GamePanel;
 
 public class OBJ_Cherry extends Entity {
 	GamePanel gp;
-	
+	public static final String objName = "Cherry";
+
 	public OBJ_Cherry(GamePanel gp) {
 		super(gp);
 		this.gp = gp;
 		type=type_pickupOnly;
-		name="Cherry";
+		name=objName;
 		value=1;
 		down1=setup("/objects/cherry", gp.tileSize, gp.tileSize);
 		price=5;

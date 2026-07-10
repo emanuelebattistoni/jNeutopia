@@ -1,4 +1,3 @@
-Aggro
-boss
-salvataggio
 ending
+drop
+item per tpare in base;                                   

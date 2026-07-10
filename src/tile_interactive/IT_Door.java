@@ -8,7 +8,7 @@ public class IT_Door extends InteractiveTile{
 		super(gp);
 		this.gp= gp;
 		this.name = "Door";
-		down1=setup("/tiles_interactive/doorB",gp.tileSize, gp.tileSize);
+		down1=setup("/tiles_interactive/btempleB",gp.tileSize, gp.tileSize);
 		this.worldX = gp.tileSize*col;
 		this.worldY = gp.tileSize*row;
 		solidArea.x = 0;
@@ -18,14 +18,12 @@ public class IT_Door extends InteractiveTile{
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 	}
-public boolean isCorrectItem() {
-
-    for (int i = 0; i < gp.player.inventory.size(); i++) {
-        if ( gp.player.inventory.get(i).name.equals("Key")) {
-            return true;
-        }
+	public boolean isCorrectItem() {
+		for (int i = 0; i < gp.player.inventory.size(); i++) {
+			if ( gp.player.inventory.get(i).name.equals("Key")) {
+				return true;
+			}
     }
-
     return false;
 }
 

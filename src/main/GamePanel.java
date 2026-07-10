@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import javax.swing.JPanel;
+
+import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
 import tile.Map;
@@ -26,7 +28,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int maxScreenCol = 16;
 	public final int maxScreenRow = 11;
 	public final int maxMap = 10;
-	public int currentMap=5;
+	public int currentMap=6;
 	
 	public final int screenWidth = tileSize * maxScreenCol;	//768 pixels
 	public final int screenHeight = tileSize * maxScreenRow;	//528 pixels
@@ -53,6 +55,9 @@ public class GamePanel extends JPanel implements Runnable{
 	public UI ui = new UI(this);
 	public EventHandler eHandler = new EventHandler(this);
 	Map map = new Map(this);
+	public SaveLoad saveLoad = new SaveLoad(this);
+	public EntityGenerator eGenerator = new EntityGenerator(this);
+	public CutsceneManager csManager = new CutsceneManager(this);
 	Thread gameThread;
 	
 	//entity and object
@@ -60,7 +65,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public Entity obj[][] = new Entity[maxMap][20];
 	public Entity npc[][] = new Entity[maxMap][8];
 	public Entity monster[][]= new Entity[maxMap][70];
-	public Entity iTile[][] = new Entity [maxMap][20];
+	public Entity iTile[][] = new Entity [maxMap][25];
 	public ArrayList<Entity> projectileList = new ArrayList<>();
 	ArrayList<Entity> entityList = new ArrayList<>();
 	
@@ -74,6 +79,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int gameOverState = 5;
 	public final int transitionState = 6;
 	public final int tradeState = 7;
+	public final int cutsceneState = 8;
+	public boolean bossBattleOn = false;
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
@@ -83,28 +90,42 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void setupGame() {
+		playMusic(0);
 		aSetter.setObject();
 		aSetter.setNpc();
 		aSetter.setMonster();
 		aSetter.setInteractivetile();
 		map.createWorldMap();
-		//playMusic(0);
 		gameState = titleState;
 	}
 	
 	public void retry() {
 		player.setDefaultPosition();
 		player.restoreLife();
+		player.resetCounter();
 		aSetter.setNpc();
 		aSetter.setMonster();
 		gameState=playState;
 	}
 	
 	public void restart() {
-		player.setDefaultValues();
 		aSetter.setObject();
+		player.resetCounter();
 		aSetter.setNpc();
 		aSetter.setMonster();
+		aSetter.setInteractivetile();		
+		player.setDefaultValues();
+		csManager.sceneNum = csManager.NA;
+		csManager.scenePhase = 0;
+		csManager.alpha = 0f;     
+		csManager.counter = 0;
+		csManager.y = 0;
+		ui.commandNum = 0;
+		ui.subState = 0;
+		ui.charIndex = 0;
+		ui.combinedText = "";
+		ui.npc = null;
+		ui.transitionCounter = 0;
 		gameState = titleState;
 	}
 	
@@ -273,8 +294,12 @@ public class GamePanel extends JPanel implements Runnable{
 			for(int i =0; i < entityList.size(); i++) {
 				entityList.get(i).draw(g2);
 			}
+			
 			//empty entities
 			entityList.clear();
+			
+			//cutscene
+			csManager.draw(g2);
 			
 			//UI
 			ui.draw(g2);
