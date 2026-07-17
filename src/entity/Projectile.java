@@ -17,23 +17,27 @@ public class Projectile extends Entity{
 		this.user = user;
 	}
 	public void update() {
+		if(dying == true) {
+			dyingAnimation();
+			return; 
+		}
 
 		if(user == gp.player) {
 			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-			if(monsterIndex!=999) {
-				gp.player.damageMonster(monsterIndex,this, attack);
-				alive = false;
+			if(monsterIndex != 999) {
+				gp.player.damageMonster(monsterIndex, this, attack);
+				dying = true; 
 			}
 		}
-		if (user!=gp.player) {
+		if (user != gp.player) {
 			boolean contactPlayer = gp.cChecker.checkPlayer(this);
 			if(gp.player.invincible == false && contactPlayer == true) {
 				damagePlayer(attack);
-				alive = false;
+				dying = true; 
 			}
 		}
-		int diagSpeed = (int) Math.round(speed * 0.707);
 		
+		int diagSpeed = (int) Math.round(speed * 0.707);
 		if (diagSpeed == 0 && speed > 0) {
 			diagSpeed = 1; 
 		}
@@ -43,26 +47,26 @@ public class Projectile extends Entity{
 		case "down": worldY += speed; break;
 		case "left": worldX -= speed; break;
 		case "right":worldX += speed; break;
-		
 		case "upLeft": worldX -= diagSpeed; worldY -= diagSpeed; break;
 		case "upRight": worldX += diagSpeed; worldY -= diagSpeed; break;
 		case "downLeft": worldX -= diagSpeed; worldY += diagSpeed; break;
 		case "downRight": worldX += diagSpeed; worldY += diagSpeed; break;
 		}
+		
 		life--;
-		if(life<=0) {
-			alive=false;
+		if(life <= 0) {
+			dying = true; 
 		}
+		
 		spriteCounter++;
 		if(spriteCounter > 6) {
 			if(spriteNum == 1) {
-				spriteNum=2;
+				spriteNum = 2;
 			}
 			else if (spriteNum == 2) {
 				spriteNum = 1;
 			}
 			spriteCounter = 0;
-
 		}
 	}
 }

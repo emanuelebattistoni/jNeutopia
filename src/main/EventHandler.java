@@ -19,10 +19,10 @@ public class EventHandler {
 		int row =0;
 		while (map < gp.maxMap && col < gp.maxWorldCol && row < gp.maxWorldRow) {
 			eventRect[map][col][row] = new EventRect();
-			eventRect[map][col][row].x= 23;
-			eventRect[map][col][row].y=23;
-			eventRect[map][col][row].width=2;
-			eventRect[map][col][row].height=2;
+			eventRect[map][col][row].x= 8;
+			eventRect[map][col][row].y= 8;
+			eventRect[map][col][row].width= 32;
+			eventRect[map][col][row].height= 32;
 			eventRect[map][col][row].eventRectDefaultX = eventRect[map][col][row].x;
 			eventRect[map][col][row].eventRectDefaultY = eventRect[map][col][row].y;
 			col++;
@@ -56,26 +56,52 @@ public class EventHandler {
 			canTouchEvent = true;
 		}
 		if(canTouchEvent==true) {
-			if(hit(0,41,26,"any")==true) {teleport(1,12, 11);}
-			if(hit(1,12,12,"any")==true || (hit(1,13,12,"any")==true)) {teleport(0,41,27);}
+			if(hit(0,41,26,"any")==true) {
+				teleport(1,12, 11);
+				gp.playSE(17);
+			}
+			if(hit(1,12,12,"any")==true || (hit(1,13,12,"any")==true)) {
+				teleport(0,41,27);
+				gp.playSE(18);
+			}
 			if(hit(0,40,18,"any")==true) {teleport(5,13,26);}
 			if(hit(5,12,27,"any")==true || hit(5,13,27,"any")==true) {teleport(0,40,19);}
 			if(hit(0,61,24,"any")==true) {teleport(7,12, 11);}
 			if(hit(7,12,12,"any")==true || (hit(7,13,12,"any")==true)) {teleport(0,61,25);}
-			if(hit(0,57,5,"any")==true) {teleport(2,12, 11);}
-			if(hit(2,12,12,"any")==true || (hit(2,13,12,"any")==true)) {teleport(0,57,6);}
+			if(hit(0,57,5,"any")==true) {
+				teleport(2,12, 11);
+				gp.playSE(17);
+			}
+			if(hit(2,12,12,"any")==true || (hit(2,13,12,"any")==true)) {
+				teleport(0,57,6);
+				gp.playSE(18);
+			}
 			if(hit(0,19,24,"any")==true) {teleport(3,12, 11);}
 			if(hit(3,12,12,"any")==true || (hit(3,13,12,"any")==true)) {teleport(0,19,25);}	
-			if(hit(0,20,16,"any")==true) {teleport(4,12, 11);}
-			if(hit(4,12,12,"any")==true || (hit(4,13,12,"any")==true)) {teleport(0,20,17);}
-			if(hit(0,8,5,"any")==true) {teleport(8,12, 11);}
-			if(hit(8,12,12,"any")==true || (hit(8,13,12,"any")==true)) {teleport(0,8,6);}
+			if(hit(0,20,16,"any")==true) {
+				teleport(4,12, 11);
+				gp.playSE(17);
+			}
+			if(hit(4,12,13,"any")==true || (hit(4,13,13,"any")==true)) {
+				teleport(0,20,17);
+				gp.playSE(18);
+			}
+			if(hit(0,8,5,"any")==true) {
+				teleport(8,12, 11);
+				gp.playSE(17);
+			}
+			if(hit(8,12,12,"any")==true || (hit(8,13,12,"any")==true)) {
+				teleport(0,8,6);
+				gp.playSE(17);
+			}
 			if(hit(0,25,6,"any")==true) {teleport(6,7,78);}
 			if(hit(6,7,79,"any")==true || (hit(6,7,79,"any")==true)){
-				{teleport(0,25,7);}
+				teleport(0,25,7);
+				gp.playSE(18);
 				gp.aSetter.setMonster();
 			}
 		}
+		
 	}
 	
 	public boolean hit(int map,int col, int row, String reqDirection) {
@@ -101,17 +127,22 @@ public class EventHandler {
 	    return hit;
 	}
 	
-	public void damagePit(int gameState) {
-		gp.gameState = gameState;
-		gp.player.life--;
-	}
-	
 	public void teleport(int map, int x, int y) {
+		gp.stopMusic();
 	    targetMap = map;
 	    targetCol = x;
 	    targetRow = y;
-	    
-	    gp.gameState = gp.transitionState; 
+	    gp.gameState = gp.transitionState;
+	    if(map == 0) {
+	    	gp.playMusic(2);
+	    }
+	    else if(map == 6) {
+	    	gp.playMusic(1);
+	    }
+	    else {
+	    	gp.playMusic(3);
+	    }
+	   
 	}
 	public void executeTeleport() {
 	    gp.currentMap = targetMap;

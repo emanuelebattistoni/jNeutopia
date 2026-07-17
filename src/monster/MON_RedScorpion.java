@@ -1,6 +1,7 @@
 package monster;
 
 import java.util.Random;
+
 import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Bomb;
@@ -22,6 +23,7 @@ public class MON_RedScorpion extends Entity {
 		speed = defaultSpeed;
 		maxLife = 3;
 		life = maxLife;
+		attack=1;
 		solidArea.x = 3;
 		solidArea.y = 18;
 		solidArea.width = 42;

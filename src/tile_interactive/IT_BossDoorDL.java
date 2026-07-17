@@ -28,7 +28,7 @@ public class IT_BossDoorDL extends InteractiveTile{
 	}
 	
 	public InteractiveTile getDestroyedForm() {
-		InteractiveTile tile =new IT_DestroyedWallL(gp, worldX/gp.tileSize, worldY/gp.tileSize);
+		InteractiveTile tile =new IT_DestroyedWallL(gp, worldX/gp.tileSize, worldY/gp.tileSize);	
 		return tile;
 	}
 }

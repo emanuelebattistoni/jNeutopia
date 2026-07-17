@@ -21,5 +21,6 @@ public class OBJ_Cherry extends Entity {
 		if(gp.player.life != gp.player.maxLife){
 		gp.player.life+=value;
 		}
+		gp.playSE(21);
 	}
 }

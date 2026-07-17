@@ -9,7 +9,7 @@ public class NPC_Cowboy extends Entity{
 		super(gp);
 		this.gp= gp;
 		type=type_npc;
-	    direction = "up";   // default
+	    direction = "up";
 		getImage();
 		setDialogue();
 		collisionOn = false;

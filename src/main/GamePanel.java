@@ -2,7 +2,6 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import entity.Entity;
 import entity.Player;
 import tile.Map;
 import tile.TileManager;
-import tile_interactive.InteractiveTile;
 
 public class GamePanel extends JPanel implements Runnable{
 	
@@ -103,12 +101,14 @@ public class GamePanel extends JPanel implements Runnable{
 		player.setDefaultPosition();
 		player.restoreLife();
 		player.resetCounter();
-		aSetter.setNpc();
 		aSetter.setMonster();
 		gameState=playState;
+		stopMusic();
+		playMusic(3);
 	}
 	
 	public void restart() {
+		
 		aSetter.setObject();
 		player.resetCounter();
 		aSetter.setNpc();
@@ -127,10 +127,11 @@ public class GamePanel extends JPanel implements Runnable{
 		ui.npc = null;
 		ui.transitionCounter = 0;
 		gameState = titleState;
+		stopMusic();
+		playMusic(0);
 	}
 	
 	public void startGameThread() {
-		
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
@@ -175,10 +176,10 @@ public class GamePanel extends JPanel implements Runnable{
 				npc[currentMap][i].update();
 			}
 		}
-		}
+		
 		for(int i = 0; i < monster[1].length; i++) {
 			if(monster[currentMap][i] != null) {
-				if (monster[currentMap][i].alive == true && monster[currentMap][i].dying == false) {
+				if (monster[currentMap][i].alive == true) {
 				monster[currentMap][i].update();
 				}
 				if (monster[currentMap][i].alive == false) {
@@ -194,11 +195,15 @@ public class GamePanel extends JPanel implements Runnable{
 				}
 				if (projectileList.get(i).alive == false) {
 					projectileList.remove(i);
+					i--;
 					}
+				}
 			}
+		for(int i = 0; i < iTile[1].length ; i++) {
+			if(iTile[currentMap][i] != null) {
+				iTile[currentMap][i].update();
+			}	
 		}
-		if(gameState == inventoryState) {
-			//add
 		}
 		
 	}
@@ -305,21 +310,21 @@ public class GamePanel extends JPanel implements Runnable{
 			ui.draw(g2);
 		}	
 		//DEBUG 
-		if(keyH.showDebugText == true) {
-			long drawEnd = System.nanoTime();
-			long passed = drawEnd - drawStart;
-			g2.setColor(Color.white);
-			g2.setFont(new Font("Arial", Font.PLAIN,20));
-			g2.setColor(Color.white);
-			int x=10;
-			int y = 400;	
-			int lineHeight = 20;
-			g2.drawString("Draw Time: "+ passed, 10 , 400); y+=lineHeight;
-			g2.drawString("WorldX"+player.worldX, x, y); y+=lineHeight;
-			g2.drawString("WorldY"+player.worldY, x, y); y+=lineHeight;
-			g2.drawString("Col"+(player.worldX +player.solidArea.x)/tileSize, x, y); y+=lineHeight;
-			g2.drawString("Row"+(player.worldY +player.solidArea.y)/tileSize, x, y); y+=lineHeight;
-		}
+//		if(keyH.showDebugText == true) {
+//			long drawEnd = System.nanoTime();
+//			long passed = drawEnd - drawStart;
+//			g2.setColor(Color.white);
+//			g2.setFont(new Font("Arial", Font.PLAIN,20));
+//			g2.setColor(Color.white);
+//			int x=10;
+//			int y = 400;	
+//			int lineHeight = 20;
+//			g2.drawString("Draw Time: "+ passed, 10 , 400); y+=lineHeight;
+//			g2.drawString("WorldX"+player.worldX, x, y); y+=lineHeight;
+//			g2.drawString("WorldY"+player.worldY, x, y); y+=lineHeight;
+//			g2.drawString("Col"+(player.worldX +player.solidArea.x)/tileSize, x, y); y+=lineHeight;
+//			g2.drawString("Row"+(player.worldY +player.solidArea.y)/tileSize, x, y); y+=lineHeight;
+//		}
 		
 		
 		g2.dispose();

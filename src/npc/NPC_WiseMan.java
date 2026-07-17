@@ -10,7 +10,7 @@ public class NPC_WiseMan extends Entity{
 		this.gp= gp;
 		type=type_npc;
 
-	    direction = "up";   // default
+	    direction = "up";
 		getImage();
 		setDialogue();
 		collisionOn = false;
@@ -24,7 +24,7 @@ public class NPC_WiseMan extends Entity{
 	public void setDialogue() {
 		dialogues[0][0]="Ci sono spesso delle stanze che non si\nvedono facilmente.";
 		dialogues[0][1]="Puoi usare delle bombe per aprire dei\npassaggi segreti.";
-		dialogues[0][2]="Devi essere molto intelligente se vuoi\nrisolvere tutti i misteri nascosti di questo\nmondo.";
+		dialogues[0][2]="Dovrai essere molto intelligente se vorrai\nrisolvere tutti i misteri nascosti di questo\nmondo.";
 	}
 	public void speak() {
 		startDialogue(this,dialogueSet);

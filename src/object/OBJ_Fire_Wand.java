@@ -22,11 +22,11 @@ public class OBJ_Fire_Wand extends Entity {
         if (gp.player.shotAvaibleCounter >= 30) {
 
             OBJ_Fireball fireball = new OBJ_Fireball(gp);
-
+            
             fireball.set(entity.worldX, entity.worldY, entity.direction, true, entity);
             
             gp.projectileList.add(fireball); 
-            
+            gp.playSE(24);
             gp.player.shotAvaibleCounter = 0;
             
         }

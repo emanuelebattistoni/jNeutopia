@@ -1,6 +1,7 @@
 package monster;
 
 import java.util.Random;
+
 import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Bomb;
@@ -30,6 +31,8 @@ public class MON_Jellyfish extends Entity {
         solidArea.height = 30;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        attackArea.width = 48;
+        attackArea.height = 48;
         getImage();
         getAttackImage();
         loadDeathImage();
@@ -49,7 +52,7 @@ public class MON_Jellyfish extends Entity {
     	attackLeft=setup("/monster/jellyfishAttackLeft", gp.tileSize*2, gp.tileSize);
     	attackRight=setup("/monster/jellyfishAttackRight", gp.tileSize*2, gp.tileSize);
     	attackLeft2=setup("/monster/jellyfishAttackLeft2", gp.tileSize*2, gp.tileSize);
-    	attackRight2=setup("/monster/jellyfishAttackRight2", gp.tileSize*2, gp.tileSize);
+    	attackRight2=setup("/monster/jellyfishAttackRight2", gp.tileSize*2, gp.tileSize);	
     }
 
     
@@ -66,12 +69,34 @@ public class MON_Jellyfish extends Entity {
             }
         }
         if (attacking == false) {
-        	checkAttackOrNot(30, gp.tileSize*4,gp.tileSize);
+            int xDis = getXdistance(gp.player);
+            int yDis = getYdistance(gp.player); 
+            if (yDis < gp.tileSize && xDis <= gp.tileSize) {
+                int i = new Random().nextInt(5); 
+                if (i == 0) {
+                    if (gp.player.worldX < worldX) {
+                        direction = "left"; 
+                    } else if (gp.player.worldX > worldX) {
+                        direction = "right"; 
+                    }
+                    attacking = true;
+                    spriteNum = 1;
+                    shotAvaibleCounter = 0;
+                }
+            }
         }
     }
 
     public void damageReaction() {
         actionLockCounter = 0;
+    }
+    
+    @Override
+    public void checkAttackOrNot(int rate, int straight, int horizontal) {
+        if (direction.equals("up") || direction.equals("down")) {
+            return; 
+        }
+        super.checkAttackOrNot(rate, straight, horizontal);
     }
     
     public void checkDrop() {

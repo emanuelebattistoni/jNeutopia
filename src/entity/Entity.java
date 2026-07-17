@@ -136,6 +136,10 @@ public class Entity {
 	}
 
 	public void update() {
+		if (dying == true) {
+			dyingAnimation();
+			return;
+		}
 		if(knockBack == true) {
 			checkCollision();
 			if(collisionOn == true) {
@@ -143,7 +147,7 @@ public class Entity {
 				knockBack=false;
 				speed = defaultSpeed;
 			}
-			else if(collisionOn == false) {
+			else{
 				switch(knockBackDirection) {
 				case "up":worldY -= speed; break;
 				case "down":worldY += speed;break;
@@ -247,7 +251,7 @@ public class Entity {
 	}
 	
 	public int getYdistance(Entity target) {
-		int yDistance = Math.abs(worldX - target.worldX);
+		int yDistance = Math.abs(worldY - target.worldY);
 		return yDistance;
 	}
 
@@ -274,22 +278,25 @@ public class Entity {
 	}
 	
 	public void moveTowards(int targetX, int targetY) {
-		int xDistance = Math.abs(worldX - targetX);
-		int yDistance = Math.abs(worldY - targetY);
-
-		if (xDistance > yDistance) {
-			if (worldX > targetX) {
-				direction = "left";
-			} else {
-				direction = "right";
-			}
-		} else {
-			if (worldY > targetY) {
-				direction = "up";
-			} else {
-				direction = "down";
-			}
-		}
+	    actionLockCounter++;
+	    if(actionLockCounter > 30) {
+	        int xDistance = Math.abs(worldX - targetX);
+	        int yDistance = Math.abs(worldY - targetY);
+	        if (xDistance > yDistance) {
+	            if (worldX > targetX) {
+	                direction = "left";
+	            } else {
+	                direction = "right";
+	            }
+	        } else {
+	            if (worldY > targetY) {
+	                direction = "up";
+	            } else {
+	                direction = "down";
+	            }
+	        }
+	        actionLockCounter = 0;
+	    }
 	}
 
 	public void getRandomDirection() {
@@ -331,29 +338,20 @@ public class Entity {
 
 	        int attackStrikeWidth = attackArea.width;
 	        int attackStrikeHeight = attackArea.height;
-	        switch(direction) {
-	        case "up":
-	            worldY -= 90; 
-	            attackStrikeWidth = 36;
-	            attackStrikeHeight = 60;
-	            break;
-	        case "down": 
-	            worldY += 30;
-	            attackStrikeWidth = 36;
-	            attackStrikeHeight = 54;
-	            break;
-	        case "left": 
-	            worldX -= 68;
-	            worldY -= 14; 
-	            attackStrikeWidth = 54; 
-	            attackStrikeHeight = 36;
-	            break;
-	        case "right": 
-	            worldX += 26; 
-	            worldY -= 14;
-	            attackStrikeWidth = 54;
-	            attackStrikeHeight = 36;
-	            break;
+	        if (type == type_player) {
+	            switch(direction) {
+	                case "up": worldY -= 90; attackStrikeWidth = 36; attackStrikeHeight = 60; break;
+	                case "down": worldY += 30; attackStrikeWidth = 36; attackStrikeHeight = 54; break;
+	                case "left": worldX -= 68; worldY -= 14; attackStrikeWidth = 54; attackStrikeHeight = 36; break;
+	                case "right": worldX += 26; worldY -= 14; attackStrikeWidth = 54; attackStrikeHeight = 36; break;
+	            }
+	        } else {
+	            switch(direction) {
+	                case "up": worldY -= attackArea.height; break;
+	                case "down": worldY += gp.tileSize; break;
+	                case "left": worldX -= attackArea.width; break;
+	                case "right": worldX += gp.tileSize; break;
+	            }
 	        }
 
 	        solidArea.width = attackStrikeWidth;
@@ -384,7 +382,7 @@ public class Entity {
 
 	public void damagePlayer(int attack) {
 		if(gp.player.invincible == false) {
-			//gp.playSE(6);
+			gp.playSE(14);
 			gp.player.life-=attack;
 			gp.player.invincible = true;
 			gp.player.invincibleCounter=0;
@@ -472,7 +470,6 @@ public class Entity {
 				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4F));
 			}
 			if(dying == true) {
-				dyingAnimation(); 
 				if (spriteNum == 1) body = death1;
 				if (spriteNum == 2) body = death2;
 				if (spriteNum == 3) body = death3;

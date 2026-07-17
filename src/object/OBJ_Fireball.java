@@ -1,6 +1,6 @@
 package object;
 
-import entity.Entity; 
+import entity.Entity;
 import entity.Projectile;
 import main.GamePanel;
 
@@ -14,7 +14,7 @@ public class OBJ_Fireball extends Projectile {
 		this.gp = gp;
 		name = objName;
 		speed = 5;
-		maxLife = 50;
+		maxLife = 40;
 		life = maxLife;
 		attack = 1; 
 		alive = false;
@@ -37,13 +37,15 @@ public class OBJ_Fireball extends Projectile {
 		left2 = up2;
 		right1 = up1;
 		right2 = up2;
+		death1=setup("/projectile/fireballD1", gp.tileSize, gp.tileSize);
+		death2=setup("/projectile/fireballD2", gp.tileSize, gp.tileSize);
+		death3=setup("/projectile/fireballD3", gp.tileSize, gp.tileSize);
 	}
 
 	@Override
 	public void set(int worldX, int worldY, String direction, boolean alive, Entity user) {
 
 		super.set(worldX, worldY, direction, alive, user);
-		
 		if (user == gp.player) {
 			this.attack = 1; 
 		} else {
@@ -51,17 +53,22 @@ public class OBJ_Fireball extends Projectile {
 		}
 	}
 
-	@Override
 	public void update() {
+		if (dying == true) {
+			dyingAnimation();
+			return; 
+		}
 
 		collisionOn = false;
-		gp.cChecker.checkTile(this);
+		gp.cChecker.checkTile(this); 
 		
 		if(collisionOn == true) {
-			alive = false;
+			dying = true; 
 		} 
 		else {
 			super.update();
 		}
 	}
+
+		
 }

@@ -1,10 +1,6 @@
 package monster;
-
-import java.util.Random;
 import entity.Entity;
 import main.GamePanel;
-import object.OBJ_Cherry;
-import object.OBJ_Coin;
 import object.OBJ_Fireball;
 import object.OBJ_Key; 
 
@@ -21,8 +17,7 @@ public class MON_Drake extends Entity {
         name = "Drake";
         defaultSpeed = 1;
         speed = defaultSpeed;
-        //maxLife = 66;
-        maxLife = 1;
+        maxLife = 66;
         life = maxLife;
         attack=4;
         solidArea.width = 140;
@@ -118,6 +113,7 @@ public class MON_Drake extends Entity {
         if (attackTimer > 260) {
             attackTimer = 0;
         }
+
     }
 
     public void damageReaction() {
@@ -130,6 +126,8 @@ public class MON_Drake extends Entity {
     }
     
     public void checkDrop() {
+    	gp.stopMusic();
+        gp.playMusic(1);
     	 dropItem(new OBJ_Key(gp));
     }
 }

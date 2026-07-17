@@ -1,5 +1,4 @@
 package tile_interactive;
-
 import main.GamePanel;
 
 public class IT_Door extends InteractiveTile{
@@ -29,7 +28,7 @@ public class IT_Door extends InteractiveTile{
 
 @Override
 public InteractiveTile getDestroyedForm() {
-
     return null; 
 }
+
 }

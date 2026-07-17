@@ -1,4 +1,4 @@
-package main;
+	package main;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -6,17 +6,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import entity.Entity;
 import object.OBJ_Heart;
 import object.OBJ_Sword;
-import tile.Map;
-import entity.Entity;
 public class UI {
     GamePanel gp;
     Graphics2D g2;
@@ -53,15 +51,15 @@ public class UI {
         swordImage = sword.down1;
         UtilityTool uTool = new UtilityTool();
         try {
-            inventoryImage = ImageIO.read(new File("res/inventory/Inventory.png"));
-            inventoryCursor = ImageIO.read(new File("res/inventory/Cursor.png"));
+        	inventoryImage = ImageIO.read(getClass().getResourceAsStream("/inventory/Inventory.png"));
+            inventoryCursor = ImageIO.read(getClass().getResourceAsStream("/inventory/cursor.png"));
             inventoryCursor = uTool.scaleImage(inventoryCursor, gp.tileSize + 16, gp.tileSize + 16);
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         try {
-            hudImage = ImageIO.read(new File("res/hud/HudBanner.png")); 
+            hudImage = ImageIO.read(getClass().getResourceAsStream("/hud/HudBanner.png")); 
             hudImage = uTool.scaleImage(hudImage, gp.screenWidth, gp.tileSize * 2);
 
         } catch (IOException e) {
@@ -79,10 +77,6 @@ public class UI {
         }
     }
 
-    public void addMessage(String text) {
-    	message.add(text);
-    	messageCounter.add(0);
-    }
     public void draw(Graphics2D g2) {
     	this.g2 = g2;
     	g2.setFont(nesFont);
@@ -95,7 +89,6 @@ public class UI {
     	//PLAYSTATE
     	if(gp.gameState == gp.playState) {
     		drawTopHUD();
-    		drawMessage();
     	}
     	//Inventory State
     	if(gp.gameState == gp.inventoryState) {
@@ -196,31 +189,10 @@ public class UI {
             heartX += gp.tileSize / 2 - 4;
         }
     }
-  
- 
-    public void drawMessage() {
-    	int messageX = gp.screenWidth/2;
-    	int messageY = gp.screenHeight/2;
-    	g2.setFont(g2.getFont().deriveFont(32F));
-    	for(int i =0; i<message.size(); i++) {
-    		if(message.get(i)!= null) {
-    			g2.setColor(Color.black);
-    			g2.drawString(message.get(i), messageX+2, messageY+2);
-    			g2.setColor(Color.white);
-    			g2.drawString(message.get(i), messageX, messageY);
-    			int counter = messageCounter.get(i)+1;
-    			messageCounter.set(i, counter);
-    			messageY+=50;
-    			if(messageCounter.get(i)>180) {
-    				message.remove(i);
-    				messageCounter.remove(i);
-    			}
-    		}
-    	}
-    }
+
     public void drawTitleScreen() {
     	try {
-    	    titleScreenImage = ImageIO.read(new File("res/TitleScreen/TitleScreen.png"));
+    	    titleScreenImage = ImageIO.read(getClass().getResourceAsStream("/TitleScreen/TitleScreen.png"));
     	} catch (IOException e) {
     	    e.printStackTrace();
     	    g2.setColor(new Color(70, 120, 180));
@@ -262,7 +234,7 @@ public class UI {
         g2.drawString(text, x,y);
         if (commandNum == 0) {
         	try {
-        	    selectImage = ImageIO.read(new File("res/TitleScreen/SelectImage.png"));
+        	    selectImage = ImageIO.read(getClass().getResourceAsStream("/TitleScreen/SelectImage.png"));
         	    g2.drawImage(selectImage, x-36, y-24,gp.tileSize/2, gp.tileSize/2, null);
         	} catch (IOException e) {
         	    e.printStackTrace();
@@ -279,7 +251,7 @@ public class UI {
     	g2.drawString(text, x,y);
     	if (commandNum == 1) {
         	try {
-        	    selectImage = ImageIO.read(new File("res/TitleScreen/SelectImage.png"));
+        	    selectImage = ImageIO.read(getClass().getResourceAsStream("/TitleScreen/SelectImage.png"));
         	    g2.drawImage(selectImage, x-36, y-24,gp.tileSize/2, gp.tileSize/2, null);
         	} catch (IOException e) {
         	    e.printStackTrace();
@@ -323,6 +295,7 @@ public class UI {
                 	combinedText = combinedText+s;
                 	currentDialogue=combinedText;
                 	charIndex++;
+                	gp.playSE(20);
                 }
                 if (charIndex == characters.length && gp.keyH.zetapressed == true ) {
                 	charIndex=0;
@@ -541,6 +514,7 @@ public class UI {
     		}
         }
     }
+  
     public void trade_buy() {
         int frameX = gp.tileSize / 2;
         int frameY = gp.tileSize * 3;
@@ -603,7 +577,7 @@ public class UI {
                 else {
                     if(gp.player.canObtainItem(item) == true) {
                         gp.player.coin -= item.price;
-                        
+                        gp.playSE(23);
                         npc.inventory.remove(itemIndex);
                         
                         subState = 0;
@@ -632,8 +606,6 @@ public class UI {
       
     }
   
-
-
     public void drawOptionsScreen() {
     	g2.setColor(Color.white);
     	g2.setFont(nesFont.deriveFont(32F));
@@ -648,6 +620,7 @@ public class UI {
     	case 2:options_control(frameX,  frameY); break;
     	}
     }
+    
     public void options_top(int frameX, int frameY) {
     	int textX;
     	int textY;
@@ -733,7 +706,7 @@ public class UI {
     	textY+=gp.tileSize+gp.tileSize/2;
     	g2.drawString("Conferma/Attacca", textX,textY);
     	textY+=gp.tileSize+gp.tileSize/2;
-    	g2.drawString("Usa l'item selezionato", textX,textY);
+    	g2.drawString("Usa l'item", textX,textY);
     	textY+=gp.tileSize+gp.tileSize/2;
     	g2.drawString("Apre l'inventario", textX,textY);
     	textY+=gp.tileSize+gp.tileSize/2;
@@ -803,6 +776,7 @@ public class UI {
     	int itemIndex = slotCol +(slotRow*4);
     	return itemIndex;
     }
+    
     public void drawSubWindow(int x, int y, int width, int height) {
     	Color c = new Color(0, 0, 0);
     	g2.setColor(c);
