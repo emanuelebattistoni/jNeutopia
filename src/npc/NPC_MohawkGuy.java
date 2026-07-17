@@ -3,7 +3,9 @@ package npc;
 import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Bomb;
+import object.OBJ_Cherry;
 import object.OBJ_Fire_Wand;
+import object.OBJ_Fireball;
 import object.OBJ_Potion;
 import object.OBJ_Wing;
 
@@ -13,7 +15,7 @@ public class NPC_MohawkGuy extends Entity{
 		super(gp);
 		this.gp= gp;
 		type=type_npc;
-	    direction = "up";
+	    direction = "up";   // default
 		getImage();
 		setDialogue();
 		setItems();

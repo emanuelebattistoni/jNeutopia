@@ -1,13 +1,23 @@
 package entity;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
 import object.OBJ_Armor;
+import object.OBJ_Bomb;
+import object.OBJ_Fireball;
+import object.OBJ_Key;
 import object.OBJ_Sword;
+import tile_interactive.IT_Door;
 
 public class Player extends Entity{
 	KeyHandler keyH;
@@ -65,6 +75,7 @@ public class Player extends Entity{
 		inventory.clear();
 		inventory.add(new OBJ_Sword(gp));
 		inventory.add(new OBJ_Armor(gp));
+		
 	}
 	
 	public void setDefaultPosition() {
@@ -270,7 +281,6 @@ public class Player extends Entity{
 			shotAvaibleCounter++;
 		}
 		if (life <= 0 && isDying == false && isDead == false) {
-			gp.playSE(13);
 	        isDying = true; 
 	    }
 		updateBombCount();
@@ -308,13 +318,13 @@ public class Player extends Entity{
 	            if (tileName.equals("Door")) {
 	                gp.iTile[gp.currentMap][i] = null; 
 	                gp.ui.currentDialogue = "Hai aperto la porta del dungeon!";
-	                gp.playSE(4);
 	            } 
 	            else if (tileName.equals("BossDoor")) {
 	                int doorX = gp.iTile[gp.currentMap][i].worldX;
 	                int doorY = gp.iTile[gp.currentMap][i].worldY;
+	                
 	                gp.iTile[gp.currentMap][i] = null; 
-	                gp.playSE(4);
+	                
 	                for (int j = 0; j < gp.iTile[gp.currentMap].length; j++) {
 	                    if (gp.iTile[gp.currentMap][j] != null && gp.iTile[gp.currentMap][j].name != null && gp.iTile[gp.currentMap][j].name.equals("BossDoor")) {
 	                        
@@ -385,14 +395,13 @@ public class Player extends Entity{
 			else {
 			String text=""; 
 			if(canObtainItem(gp.obj[gp.currentMap][i])==true) {
-				gp.playSE(5);
-				gp.obj[gp.currentMap][i]=null;
+				//gp.playSE(1);
 			}
 			else {
 				text="You cannot carry any more!";
 			}
-			gp.ui.currentDialogue=text;
-			gp.ui.drawDialogueScreen();
+			gp.ui.addMessage(text);
+			gp.obj[gp.currentMap][i]=null;
 			}
 		}
 	}
@@ -402,7 +411,7 @@ public class Player extends Entity{
 				gp.npc[gp.currentMap][i].speak();
 			}
 			else{
-				gp.playSE(8);
+				//gp.playSE(7);
 				attacking = true;
 				
 			}	
@@ -411,7 +420,7 @@ public class Player extends Entity{
 	public void contactMonster(int i) {
 		if(i !=999) {
 			if(invincible == false && gp.monster[gp.currentMap][i].dying == false) {
-				gp.playSE(14);
+				//gp.playSE(6);
 				int damage = gp.monster[gp.currentMap][i].attack;
 				life -= damage;
 				invincible = true;
@@ -433,20 +442,20 @@ public class Player extends Entity{
 	public void damageMonster(int i, Entity attacker, int attack) {
 		if(i != 999) {
 			if(gp.monster[gp.currentMap][i].invincible == false) {
-				gp.playSE(11);
+				//gp.playSE(5);
 				knockBack(gp.monster[gp.currentMap][i],attacker);
 				gp.monster[gp.currentMap][i].life -= attack; 
 				gp.monster[gp.currentMap][i].invincible = true;
 				gp.monster[gp.currentMap][i].damageReaction();
 				if(gp.monster[gp.currentMap][i].life <= 0) {
 					gp.monster[gp.currentMap][i].dying = true ;
-					gp.playSE(10);
 				}
 			}
 		}
 	}
 	
-	public void selectItem() {
+
+public void selectItem() {
         
         Entity selectedItem = gp.ui.getHoveredItem();
         
@@ -473,7 +482,7 @@ public class Player extends Entity{
         }
     }
 
-	public void updateBombCount() {
+public void updateBombCount() {
 	int bombIndex = searchItemInInventory("Bomb");
 	
 	if (bombIndex != 999) {
@@ -481,7 +490,7 @@ public class Player extends Entity{
 	} else {
 		bomb = 0;
 	}
-	}
+}
 	
 	public int searchItemInInventory(String itemName) {
 		int itemIndex = 999;

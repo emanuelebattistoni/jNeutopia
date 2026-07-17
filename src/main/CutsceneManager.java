@@ -38,11 +38,8 @@ public class CutsceneManager {
 			gp.ui.drawDialogueScreen();
 		}
 		if(scenePhase==2) {
-			gp.stopMusic();
-			gp.playSE(6); 
+			//gp.playSE(4); 
 			scenePhase++;
-			gp.playMusic(25);
-			
 		}
 		if(scenePhase==3) {
 			if(counterReached(150)==true) {

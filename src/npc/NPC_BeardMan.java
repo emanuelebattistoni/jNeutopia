@@ -9,7 +9,7 @@ public class NPC_BeardMan extends Entity{
 		super(gp);
 		this.gp= gp;
 		type=type_npc;
-	    direction = "up";
+	    direction = "up";   // default
 		getImage();
 		setDialogue();
 		collisionOn = false;
@@ -17,7 +17,7 @@ public class NPC_BeardMan extends Entity{
 	public void getImage() {
 		up1=setup("/npc/brownBottom", gp.tileSize, gp.tileSize);
 		up2=up1;
-		headUp= setup("/npc/beardMan", gp.tileSize, gp.tileSize);
+		headUp= setup("/npc/BeardMan", gp.tileSize, gp.tileSize);
 	}
 	
 	public void setDialogue() {

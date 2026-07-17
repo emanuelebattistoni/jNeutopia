@@ -9,7 +9,7 @@ public class NPC_Princess extends Entity{
 		super(gp);
 		this.gp= gp;
 		type=type_npc;
-	    direction = "up";
+	    direction = "up";   // default
 		getImage();
 		setDialogue();
 		collisionOn = false;

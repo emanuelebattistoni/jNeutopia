@@ -2,6 +2,7 @@ package tile;
 
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class TileManager {
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		
-		tile = new Tile[160];
+		tile = new Tile[153];
 		mapTileNum = new int [gp.maxMap] [][];
 		
 		getTileImage();
@@ -223,12 +224,6 @@ public class TileManager {
 			setup(150,"chainT",false);
 			setup(151,"chainM",false);
 			setup(152,"chainB",false);
-			setup(153,"cornerR",true);
-			setup(154,"cornerL",true);
-			setup(155,"dungeonCornerR",true);
-			setup(156,"dungeonCornerL",true);
-			setup(157,"cornerBR",true);
-			setup(158,"cornerBL",true);
 	}
 	
 	public void setup(int index, String imageName, boolean collision) {

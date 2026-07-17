@@ -31,13 +31,7 @@ public class CollisionChecker {
 	        entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
 	        tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 	        tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
-	        if(gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == false) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldX += 2;
-	        } else if(gp.tileM.tile[tileNum1].collision == false && gp.tileM.tile[tileNum2].collision == true) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldX -= 2;
-	        } else if (gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == true) {
+	        if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
 	            entity.collisionOn = true;
 	        }
 	        break;
@@ -45,13 +39,7 @@ public class CollisionChecker {
 	        entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
 	        tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
 	        tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
-	        if(gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == false) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldX += 2;
-	        } else if(gp.tileM.tile[tileNum1].collision == false && gp.tileM.tile[tileNum2].collision == true) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldX -= 2;
-	        } else if (gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == true) {
+	        if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
 	            entity.collisionOn = true;
 	        }
 	        break;
@@ -59,13 +47,7 @@ public class CollisionChecker {
 	        entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
 	        tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityTopRow];
 	        tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityLeftCol][entityBottomRow];
-	        if(gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == false) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldY += 2;
-	        } else if(gp.tileM.tile[tileNum1].collision == false && gp.tileM.tile[tileNum2].collision == true) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldY -= 2;
-	        } else if (gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == true) {
+	        if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
 	            entity.collisionOn = true;
 	        }
 	        break;
@@ -73,13 +55,7 @@ public class CollisionChecker {
 	        entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
 	        tileNum1 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityTopRow];
 	        tileNum2 = gp.tileM.mapTileNum[gp.currentMap][entityRightCol][entityBottomRow];
-	        if(gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == false) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldY += 2;
-	        } else if(gp.tileM.tile[tileNum1].collision == false && gp.tileM.tile[tileNum2].collision == true) {
-	            entity.collisionOn = true;
-	            if(entity instanceof entity.Player) entity.worldY -= 2;
-	        } else if (gp.tileM.tile[tileNum1].collision == true && gp.tileM.tile[tileNum2].collision == true) {
+	        if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
 	            entity.collisionOn = true;
 	        }
 	        break;

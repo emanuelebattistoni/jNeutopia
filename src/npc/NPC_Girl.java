@@ -9,7 +9,7 @@ public class NPC_Girl extends Entity{
 		super(gp);
 		this.gp= gp;
 		type=type_npc;
-	    direction = "up";
+	    direction = "up";   // default
 		getImage();
 		setDialogue();
 		collisionOn = false;
@@ -21,8 +21,8 @@ public class NPC_Girl extends Entity{
 	}
 	
 	public void setDialogue() {
-		dialogues[0][0]="Quel farabutto di Dirth e le sue dozzine di\ndemoni malvagi prosperano nella sfera\nsotteranea.";
-		dialogues[0][1]="Raccogli la chiave contenuta nella cassa per\npoter accedere al labirinto sotterraneo.";
+		dialogues[0][0]="Quel farabutto di Dirth e le sue dozzine di\ndemoni malvagi proszperano nella sfera\nsotteranea.";
+		dialogues[0][1]="Raccogli la chiave contenuta nella cassa per\npoter accedere al labirinto sotteraneo.";
 		dialogues[0][2]="Ora vai verso ovest e trova l'accesso del\nlabirinto.";
 		dialogues[1][0]="Mi dispiace ma non posso più aiutarti.\nOra vai verso ovest e trova l'accesso del\nlabirinto";
 	}

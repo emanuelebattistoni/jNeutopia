@@ -19,6 +19,5 @@ public class OBJ_Coin extends Entity {
 	
 	public void use(Entity entity) {
 		gp.player.coin+=value;
-		gp.playSE(22);
 	}
 }

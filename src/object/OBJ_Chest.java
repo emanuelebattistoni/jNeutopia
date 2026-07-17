@@ -44,7 +44,6 @@ public class OBJ_Chest extends Entity {
 				gp.player.drawingGetItem = true;
 				gp.player.itemObtained = loot;
 				loot.use(gp.player);
-				gp.playSE(7);
 			}
 			else {
 				if (gp.player.canObtainItem(loot) == false) {
@@ -56,7 +55,6 @@ public class OBJ_Chest extends Entity {
 					opened = true;
 					gp.player.drawingGetItem = true;
 					gp.player.itemObtained = loot;
-					gp.playSE(7);
 				}
 			}
 		}

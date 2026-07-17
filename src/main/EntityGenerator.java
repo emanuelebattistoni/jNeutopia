@@ -10,7 +10,6 @@ import object.OBJ_Coin;
 import object.OBJ_Crystalball;
 import object.OBJ_Fire_Wand;
 import object.OBJ_Fireball;
-import object.OBJ_GoldCoin;
 import object.OBJ_Heart;
 import object.OBJ_Key;
 import object.OBJ_Medallion;
@@ -42,7 +41,6 @@ public class EntityGenerator {
 		case OBJ_Fireball.objName :obj = new OBJ_Fireball(gp);break;
 		case OBJ_Heart.objName:obj = new OBJ_Heart(gp);break;
 		case OBJ_Coin.objName:obj = new OBJ_Coin(gp);break;
-		case OBJ_GoldCoin.objName:obj = new OBJ_GoldCoin(gp);break;
 		case OBJ_Wing.objName:obj = new OBJ_Wing(gp);break;
 		case OBJ_Medallion.objName:obj = new OBJ_Medallion(gp);break;
 		}

@@ -1,5 +1,6 @@
 package monster;
 
+import entity.Entity;
 import main.GamePanel;
 import object.OBJ_Bomb;
 import object.OBJ_Cherry;
@@ -8,8 +9,6 @@ import object.OBJ_GoldCoin;
 import object.OBJ_Wing;
 
 import java.util.Random;
-
-import entity.Entity;
 
 public class MON_RedBat extends Entity {
     

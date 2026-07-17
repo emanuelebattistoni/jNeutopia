@@ -4,7 +4,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Armor;
+import object.OBJ_Bomb;
+import object.OBJ_BookOfRevival;
+import object.OBJ_Chest;
+import object.OBJ_Crystalball;
+import object.OBJ_Fire_Wand;
+import object.OBJ_Key;
+import object.OBJ_Potion;
+import object.OBJ_Sword;
 
 public class SaveLoad {
 	GamePanel gp;
@@ -92,8 +103,7 @@ public class SaveLoad {
 			}
 		}
 		catch(Exception e) {
-			e.printStackTrace();		
-			}
+			e.printStackTrace();		}
 	}
 	
 }
